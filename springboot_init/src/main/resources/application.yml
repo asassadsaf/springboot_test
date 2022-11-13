@@ -1,0 +1,33 @@
+#冒号后加空格
+
+#对象(map):键值对的集合-缩进写法，常用
+#server:
+#  port: 8082
+person:
+  name: zhangsan
+  age: 21
+  address:
+    - beijing
+    - shanghai
+
+#对象(map):键值对的集合-行内写法，不常用
+person3: {name: zhangsan,age: 21}
+
+#数组：一组按次序排列的值-缩进写法
+address:
+  - beijing
+  - shanghai
+
+#数组：一组按次序排列的值-行内写法
+address2: [bejing,shanghai]
+
+#纯量：单个的，不可再分的值
+msg1: 'hello \n world'  #单引号包裹时不会识别转义字符\n，会原样输出
+msg2: "hello \n world"  #双引号包裹时会识别转义字符\n
+
+#参数引用
+name: lisi
+person2:
+  name: ${name} #引用上边定义的name值
+
+
