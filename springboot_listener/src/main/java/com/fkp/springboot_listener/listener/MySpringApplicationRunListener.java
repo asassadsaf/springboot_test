@@ -4,9 +4,11 @@ import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
+import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.InputStreamResource;
 
 import java.io.IOException;
@@ -16,8 +18,13 @@ import java.util.Properties;
 
 public class MySpringApplicationRunListener implements SpringApplicationRunListener {
 
-    public MySpringApplicationRunListener(SpringApplication application, String[] args) {
+    private final SpringApplication springApplication;
 
+    private final String[] args;
+
+    public MySpringApplicationRunListener(SpringApplication springApplication, String[] args) {
+        this.springApplication = springApplication;
+        this.args = args;
     }
 
     @Override
@@ -27,16 +34,13 @@ public class MySpringApplicationRunListener implements SpringApplicationRunListe
 
     @Override
     public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
-        YamlPropertiesFactoryBean factoryBean = new YamlPropertiesFactoryBean();
+        YamlPropertySourceLoader loader = new YamlPropertySourceLoader();
         try {
-            factoryBean.setResources(new InputStreamResource(Files.newInputStream(Paths.get("C:\\Users\\fkp12\\Desktop\\application.yml"))));
-            Properties object = factoryBean.getObject();
-            PropertiesPropertySource propertySource = new PropertiesPropertySource("externalConfiguration",object);
+            PropertySource<?> propertySource = loader.load("externalConfiguration", new InputStreamResource(Files.newInputStream(Paths.get("C:\\Users\\fkp12\\Desktop\\application.yml")))).get(0);
             environment.getPropertySources().addFirst(propertySource);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        System.out.println("SpringApplicationRunListener....environmentPrepared");
     }
 
     @Override
